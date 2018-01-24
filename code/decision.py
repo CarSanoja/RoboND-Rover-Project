@@ -9,9 +9,15 @@ def decision_step(Rover):
     # Here you're all set up with some basic functionality but you'll need to
     # improve on this decision tree to do a good job of navigating autonomously!
 
+    if Rover.near_sample == 1:
+        Rover.throttle = 0
+        Rover.brake = Rover.brake_set
+        Rover.send_pickup = True
+
+
     # Example:
     # Check if we have vision data to make decisions with
-    if Rover.nav_angles is not None:
+    elif Rover.nav_angles is not None:
         # Check for Rover.mode status
         if Rover.mode == 'forward': 
             # Check the extent of navigable terrain
