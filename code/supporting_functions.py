@@ -94,7 +94,7 @@ def create_output_images(Rover):
       samples_located = 0
       if rock_world_pos[0].any():
             
-            rock_size = 2
+            rock_size = 3
             for idx in range(len(Rover.samples_pos[0])):
                   test_rock_x = Rover.samples_pos[0][idx]
                   test_rock_y = Rover.samples_pos[1][idx]
