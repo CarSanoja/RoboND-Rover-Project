@@ -84,6 +84,46 @@ def color_segmentation(image):
 #####################################################################################
 #####################################################################################
 
+# THIS SECOND APPROACH SUPPOSED TO BE MORE EFFICIENT HANDELING SHADOWS THROUGH THE
+# CLAHE ALGORITHM WHO TAKES THE IMAGE AND IMPROVE THE CONTRAST GETTING WELL DEFINING
+# CONTOURS IF THE PARAMETERS FUNCTION WERE RIGTH. IN ADDITION TO, MY IDEA IS TO COMBINE
+# TWO METHODS, COMPARE THE CLAHE RESULTS WITH THE RESULTS OF MAKING AN OTSU THRESHOLD 
+# METHOD THROUGH AN BINARY BITWISE. IN OTHER HAND, THIS TIME I AM GONNA WORK WITH THE
+# HLS COLOR SPACE WHERE I WILL BE MANIPULATING THE LUMINANCE AND SATURATION CHANNEL MAKING
+# OBSERVATION TO SEE WHERE WE GET BETTER RESULTS.
+
+# THIS ALGORITHM WAS THINKING TO IMPROVE THE COLOR_THRES FUNCTION THAT WE GOT AS INTRODUCTION
+
+def Segmentation(image):
+    # OTSU METHOD FOLLOWING THE OPENCV DOCUMENTATION
+    img = cv2.cvtColor(image,cv2.COLOR_RGB2HLS)
+    h,l,s= cv2.split(img)
+    ret, l2 = cv2.threshold(l,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+    ret, s2 = cv2.threshold(s,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)  
+    # CLAHE ALGORTIHM FOLLOWING THE OPENCV DOCUMENTATION AND PUTTING STANDARDS PARAMETERS
+    # FOR CLIP LIMIT AND GRID SIZE
+    image = cv2.cvtColor(image,cv2.COLOR_RGB2HLS)
+    h,l,s= cv2.split(image)
+    clahe=cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8)) 
+    imgCLAHE= clahe.apply(l)
+    ret, l = cv2.threshold(imgCLAHE,0,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+    # Comparing the two methods for optimal chooises
+    l3 = cv2.bitwise_and(l,l,mask =l2)
+    # Get Back to my space channel
+    img_segmented=cv2.merge((h,l3,s2)) 
+    #fig = plt.figure(figsize=(12,3))
+    #plt.subplot(121)
+    #plt.imshow(img22)
+    img_segmented = cv2.cvtColor(img_segmented,cv2.COLOR_HLS2RGB)
+    img_segmented = cv2.cvtColor(img_segmented,cv2.COLOR_RGB2GRAY)
+    #plt.subplot(122)
+    #plt.imshow(img22, cmap='gray')
+    return img_segmented
+
+
+#####################################################################################
+#####################################################################################
+
 # Define a function to convert from image coords to rover coords
 def rover_coords(binary_img):
     # Identify nonzero pixels
