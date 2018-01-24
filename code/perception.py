@@ -1,5 +1,8 @@
 import numpy as np
 import cv2
+from skimage.segmentation import slic
+from skimage.segmentation import mark_boundaries
+
 
 # Identify pixels above the threshold
 # Threshold of RGB > 160 does a nice job of identifying ground pixels only
@@ -16,6 +19,22 @@ def color_thresh(img, rgb_thresh=(160, 160, 160)):
     color_select[above_thresh] = 1
     # Return the binary image
     return color_select
+
+def rock_detection(img):
+    yellow_mask = np.zeros_like(img[:,:,0])
+    # Require that each pixel be above all three threshold values in RGB
+    # above_thresh will now contain a boolean array with "True"
+    # where threshold was met
+    above_thresh = (img[:,:,0] > 130) \
+                & (img[:,:,1] > 130) \
+                & (img[:,:,2] < 50)
+
+    if above_thresh.any():
+        return True
+    else:
+        return False
+
+
 
 # Define a function to convert from image coords to rover coords
 def rover_coords(binary_img):
