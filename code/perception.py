@@ -246,9 +246,11 @@ def perception_step(Rover):
 
 
     # 7) Update Rover worldmap (to be displayed on right side of screen)
-
-    if Rover.roll < 1 or Rover.roll > 300 - 1:
-        if Rover.pitch < 1 or Rover.pitch > 300 - 1:
+    # I read that this angles make the car "dance lower", i dont understand completly why
+    # that but experimentally, i prove that for keepping the rover in these areas the results
+    # get improved 
+    if Rover.roll < 0.2 or Rover.roll > 300 - 0.2:
+        if Rover.pitch < 0.2 or Rover.pitch > 300 - 0.2:
             Rover.worldmap[obs_y_world, obs_x_world, 0] = 255
             Rover.worldmap[y_world, x_world, 2] = 255
         # Example: Rover.worldmap[obstacle_y_world, obstacle_x_world, 0] += 1
@@ -277,9 +279,9 @@ def perception_step(Rover):
         Rover.rocks_angles = rock_ang
         rock_xcen = rock_x_world[rock_idx]
         rock_ycen = rock_y_world[rock_idx]
-            if Rover.roll < 1 or Rover.roll > 300 - 1:
-                if Rover.pitch < 1 or Rover.pitch > 300 - 1:
-                    Rover.worldmap[rock_ycen, rock_xcen, 0] = 255
+        if Rover.roll < 1 or Rover.roll > 300 - 1:
+            if Rover.pitch < 1 or Rover.pitch > 300 - 1:
+                Rover.worldmap[rock_ycen, rock_xcen, 0] = 255
         Rover.vision_image[:,:,1]=rock_map*255
     else:
         Rover.vision_image[:,:,1]=0
