@@ -6,7 +6,7 @@ from skimage.segmentation import mark_boundaries
 
 # Identify pixels above the threshold
 # Threshold of RGB > 160 does a nice job of identifying ground pixels only
-def color_thresh(img, rgb_thresh=(120, 130, 120)):
+def color_thresh(img, rgb_thresh=(150, 130, 150)):
     # Create an array of zeros same xy size as img, but single channel
     color_select = np.zeros_like(img[:,:,0])
     # Require that each pixel be above all three threshold values in RGB
