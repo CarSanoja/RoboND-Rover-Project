@@ -6,7 +6,7 @@ from skimage.segmentation import mark_boundaries
 
 # Identify pixels above the threshold
 # Threshold of RGB > 160 does a nice job of identifying ground pixels only
-def color_thresh(img, rgb_thresh=(160, 160, 160)):
+def color_thresh(img, rgb_thresh=(120, 130, 120)):
     # Create an array of zeros same xy size as img, but single channel
     color_select = np.zeros_like(img[:,:,0])
     # Require that each pixel be above all three threshold values in RGB
@@ -249,10 +249,10 @@ def perception_step(Rover):
     # I read that this angles make the car "dance lower", i dont understand completly why
     # that but experimentally, i prove that for keepping the rover in these areas the results
     # get improved 
-    if Rover.roll < 0.2 or Rover.roll > 300 - 0.2:
-        if Rover.pitch < 0.2 or Rover.pitch > 300 - 0.2:
-            Rover.worldmap[obs_y_world, obs_x_world, 0] = 255
-            Rover.worldmap[y_world, x_world, 2] = 255
+    if Rover.roll < 0.2 or Rover.roll > 360 - 0.2:
+        #if Rover.pitch < 0.2 or Rover.pitch > 360 - 0.2:
+        Rover.worldmap[obs_y_world, obs_x_world, 0] = 255
+        Rover.worldmap[y_world, x_world, 2] = 255
         # Example: Rover.worldmap[obstacle_y_world, obstacle_x_world, 0] += 1
         #          Rover.worldmap[rock_y_world, rock_x_world, 1] += 1
         #          Rover.worldmap[navigable_y_world, navigable_x_world, 2] += 1
@@ -267,21 +267,21 @@ def perception_step(Rover):
     # Update Rover pixel distances and angles
         # Rover.nav_dists = rover_centric_pixel_distances
         # Rover.nav_angles = rover_centric_angles
-    
-    if rock_detection(Rover.img)==True:
+    Rover.near_sample=0
+    if rock_detection(warped)==True:
         rock_x, rock_y = rover_coords(rock_map)
         rock_x_world, rock_y_world = pix_to_world(rock_x, rock_y, Rover.pos[0],
                                                  Rover.pos[1], Rover.yaw, world_size, scale)
         print ("PIIIIEEEDRRRAAAAA")
+        #Rover.near_sample = 1
+
         rock_dist, rock_ang = to_polar_coords(rock_x, rock_y)
-        rock_idx=np.argmin(rock_dist)
+        #rock_idx=np.argmin(rock_dist)
         Rover.rocks_dists = rock_dist
         Rover.rocks_angles = rock_ang
-        rock_xcen = rock_x_world[rock_idx]
-        rock_ycen = rock_y_world[rock_idx]
-        if Rover.roll < 1 or Rover.roll > 300 - 1:
-            if Rover.pitch < 1 or Rover.pitch > 300 - 1:
-                Rover.worldmap[rock_ycen, rock_xcen, 0] = 255
+        rock_xcen = rock_x_world
+        rock_ycen = rock_y_world
+        Rover.worldmap[rock_ycen, rock_xcen, 1] = 255
         Rover.vision_image[:,:,1]=rock_map*255
     else:
         Rover.vision_image[:,:,1]=0
