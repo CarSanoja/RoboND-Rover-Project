@@ -19,6 +19,13 @@ def color_thresh(img, rgb_thresh=(160, 160, 160)):
     color_select[above_thresh] = 1
     # Return the binary image
     return color_select
+###################################################################################
+###################################################################################
+
+# HERE IS MY FIRST IDEA TO MAKE THE PERCEPTION STEP:
+# USING AN SUPERPIXEL SEGMENTATION ALGORITHMS (SLIC) TO MAKE THE SEGMENTATION OF IMAGES 
+# AUTONOMOUS, MY APPROACH TO THIS PROBLEM SUPPOSED TO BE GOOD BECAUSE USE PIXEL VALUES
+# QUANTIFYCATION TO SEGMENT THE IMAGES.
 
 def rock_detection(img):
     yellow_mask = np.zeros_like(img[:,:,0])
@@ -44,6 +51,30 @@ def rock_segmentation(img):
     rock_mask[above_thresh]=255
     #We return a binary image with the rock
     return rock_mask
+
+# Define a function to make de scene segmentation
+# The funtion receives the image
+# The function outputed: image_thresh (the ground, free space, original image), mask
+# (Free space in binary format), rock_flag (Returns True if a rock is detected)
+def color_segmentation(image):
+    numSegments=2
+    segments = slic(image, n_segments = numSegments, sigma = 2)
+    # loop over the unique segment values
+    for (i, segVal) in enumerate(np.unique(segments)):
+        # construct a mask for the segment
+        mask = np.zeros(image.shape[:2], dtype = "uint8")
+        mask[segments == segVal] = 255
+        image_thresh=cv2.bitwise_and(image, image, mask = mask)
+        cv2.imshow("name",image_thresh)
+        if segVal==1:
+            if rock_detection==True:
+                rock_flag=True
+                return image_thresh,mask,rock_flag
+            else:
+                rock_flag=False
+                return image_thresh,mask,rock_flag
+#####################################################################################
+#####################################################################################
 
 # Define a function to convert from image coords to rover coords
 def rover_coords(binary_img):
