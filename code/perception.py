@@ -28,13 +28,22 @@ def rock_detection(img):
     above_thresh = (img[:,:,0] > 130) \
                 & (img[:,:,1] > 130) \
                 & (img[:,:,2] < 50)
-
+    # If we find a rock, we return a True value
     if above_thresh.any():
         return True
     else:
         return False
 
-
+# Define a function to segment an image with rock detection
+def rock_segmentation(img):
+    above_thresh = (img[:,:,0] > 110) \
+                & (img[:,:,1] > 110) \
+                & (img[:,:,2] < 60)
+    # We can create a MASK to store the values (of pixels) where we find the rock
+    rock_mask=np.zeros_like(img[:,:,0]) 
+    rock_mask[above_thresh]=255
+    #We return a binary image with the rock
+    return rock_mask
 
 # Define a function to convert from image coords to rover coords
 def rover_coords(binary_img):
