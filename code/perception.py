@@ -73,6 +73,14 @@ def color_segmentation(image):
             else:
                 rock_flag=False
                 return image_thresh,mask,rock_flag
+
+# SUMMARY:
+# THIS APPROACH HAD SOME ISSUES:
+# IT IS TO WEEK FIGTHING WITH SHADOWS.
+# IT MAKES A LOT OF ITERATIONS WHEN THE ROVER GET TRAP FOR OBSTACLES, THE SESION CODE DIES.
+# ITS SLOW
+# I COULD GET OVER 60% OF MAPPED AND 40-50% OF FIDELITY
+
 #####################################################################################
 #####################################################################################
 
