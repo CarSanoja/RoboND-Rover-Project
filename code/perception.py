@@ -251,9 +251,6 @@ def perception_step(Rover):
         if Rover.pitch < 1 or Rover.pitch > 300 - 1:
             Rover.worldmap[obs_y_world, obs_x_world, 0] = 255
             Rover.worldmap[y_world, x_world, 2] = 255
-
-    #Rover.worldmap[y_world,x_world,2] = 255
-    #Rover.worldmap[obs_y_world, obs_x_world,0] = 255
         # Example: Rover.worldmap[obstacle_y_world, obstacle_x_world, 0] += 1
         #          Rover.worldmap[rock_y_world, rock_x_world, 1] += 1
         #          Rover.worldmap[navigable_y_world, navigable_x_world, 2] += 1
@@ -263,6 +260,7 @@ def perception_step(Rover):
     # 8) Convert rover-centric pixel positions to polar coordinates
     dist, angles = to_polar_coords(xpix, ypix)
     Rover.nav_angles = angles
+    Rover.nav_dists = dist
     mean_dir = np.mean(angles)
     # Update Rover pixel distances and angles
         # Rover.nav_dists = rover_centric_pixel_distances
@@ -275,9 +273,13 @@ def perception_step(Rover):
         print ("PIIIIEEEDRRRAAAAA")
         rock_dist, rock_ang = to_polar_coords(rock_x, rock_y)
         rock_idx=np.argmin(rock_dist)
+        Rover.rocks_dists = rock_dist
+        Rover.rocks_angles = rock_ang
         rock_xcen = rock_x_world[rock_idx]
         rock_ycen = rock_y_world[rock_idx]
-        Rover.worldmap[rock_ycen, rock_xcen, 0] =255
+            if Rover.roll < 1 or Rover.roll > 300 - 1:
+                if Rover.pitch < 1 or Rover.pitch > 300 - 1:
+                    Rover.worldmap[rock_ycen, rock_xcen, 0] = 255
         Rover.vision_image[:,:,1]=rock_map*255
     else:
         Rover.vision_image[:,:,1]=0
