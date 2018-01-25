@@ -15,7 +15,7 @@ def decision_step(Rover):
     #    Rover.pick_up = True
 
 
-    #elif Rover.rock_angle is not None:
+    #elif Rover.rock_angle != None:
     #    if len(Rover.rock_angle) > 0:
     #        Rover.throttle = 0.1
     #This will keep the rock in the eyes rover, limiting its vision range
