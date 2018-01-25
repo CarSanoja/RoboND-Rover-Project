@@ -9,15 +9,22 @@ def decision_step(Rover):
     # Here you're all set up with some basic functionality but you'll need to
     # improve on this decision tree to do a good job of navigating autonomously!
 
-    if Rover.near_sample == 1:
-        Rover.throttle = 0
-        Rover.brake = Rover.brake_set
-        Rover.send_pickup = True
+    #if Rover.near_sample:
+    #    Rover.throttle = 0.1
+    #    Rover.brake = Rover.brake_set       
+    #    Rover.pick_up = True
+
+
+    #elif Rover.rock_angle is not None:
+    #    if len(Rover.rock_angle) > 0:
+    #        Rover.throttle = 0.1
+    #This will keep the rock in the eyes rover, limiting its vision range
+    #        Rover.steer = np.clip(np.mean(Rover.rock_angle * 180/np.pi), -10, 10)
 
 
     # Example:
     # Check if we have vision data to make decisions with
-    elif Rover.nav_angles is not None:
+    if Rover.nav_angles is not None:
         # Check for Rover.mode status
         if Rover.mode == 'forward': 
             # Check the extent of navigable terrain
@@ -33,6 +40,11 @@ def decision_step(Rover):
                 # Set steering to average angle clipped to the range +/- 15
                 Rover.steer = np.clip(np.mean(Rover.nav_angles * 180/np.pi), -15, 15)
             # If there's a lack of navigable terrain pixels then go to 'stop' mode
+            elif (len(Rover.nav_angles) >= Rover.go_forward) and (Rover.vel<=0.2):
+                    print ("    AQUUUUUUUUUUUUUUUUUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
+                    Rover.brake = 0
+                    # Turn range is +/- 15 degrees, when stopped the next line will induce 4-wheel turning
+                    Rover.steer = -85 
             elif len(Rover.nav_angles) < Rover.stop_forward:
                     # Set mode to "stop" and hit the brakes!
                     Rover.throttle = 0
@@ -56,7 +68,13 @@ def decision_step(Rover):
                     # Release the brake to allow turning
                     Rover.brake = 0
                     # Turn range is +/- 15 degrees, when stopped the next line will induce 4-wheel turning
-                    Rover.steer = -15 # Could be more clever here about which way to turn
+                    Rover.steer = -85 # Could be more clever here about which way to turn
+
+                elif (len(Rover.nav_angles) >= Rover.go_forward) and (Rover.vel<=0.2):
+                    Rover.brake = 0
+                    # Turn range is +/- 15 degrees, when stopped the next line will induce 4-wheel turning
+                    Rover.steer = -85 
+
                 # If we're stopped but see sufficient navigable terrain in front then go!
                 if len(Rover.nav_angles) >= Rover.go_forward:
                     # Set throttle back to stored value
