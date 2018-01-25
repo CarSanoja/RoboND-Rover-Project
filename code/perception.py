@@ -122,8 +122,7 @@ def Segmentation(image):
     return img_segmented
 
 # SUMMARY:
-# THE FUNCTION ALONE WORKS HORRIBLE, THE ROVER DOES NOT FOLLOW THE DIRECTION OF
-# THE MEAN ANGLES FOR THE WARPED IMAGE
+# THE FUNCTION ALONE WORKS FINE
 
 #####################################################################################
 #####################################################################################
@@ -250,8 +249,7 @@ def perception_step(Rover):
     # I read that this angles make the car "dance lower", i dont understand completly why
     # that but experimentally, i prove that for keepping the rover in these areas the results
     # get improved 
-    if Rover.pitch < 0.2 or Rover.pitch > 359.6:
-        if Rover.roll < 0.2 or Rover.roll > 359.7:
+    if (Rover.pitch < 0.2 or Rover.pitch > 359.6) and (Rover.roll < 0.2 or Rover.roll > 359.7):
             Rover.worldmap[obs_y_world, obs_x_world, 0] = 255
             Rover.worldmap[y_world, x_world, 2] = 255
         # Example: Rover.worldmap[obstacle_y_world, obstacle_x_world, 0] += 1
@@ -279,7 +277,7 @@ def perception_step(Rover):
         print ("PIIIIEEEDRRRAAAAA")     
         rock_dist, rock_ang = to_polar_coords(rock_x, rock_y)
         Rover.rock_dist = rock_dist
-        Rover.rock_angle = rock_ang
+        Rover.rock_ang = rock_ang
         rock_idx=np.argmin(rock_dist)
         rock_xcen = rock_x_world[rock_idx]
         rock_ycen = rock_y_world[rock_idx]
